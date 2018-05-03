@@ -51,7 +51,7 @@ relationship graph component isn't separated into a family structure.
 Additionally, it would be nice to remove or relax the few parameters.
 """
 
-from __future__ import division
+
 
 import re
 from contextlib import contextmanager
@@ -529,7 +529,7 @@ def could_be_spouse(a, b):
 def could_be_child(parent, child):
     # check if we've already proven that parent or their spouse is
     # a parent to this child
-    if set(child.known_parents) & set(filter(None, [parent, parent.spouse])):
+    if set(child.known_parents) & set([_f for _f in [parent, parent.spouse] if _f]):
         return True
 
     if parent.spouse is not None and parent.spouse is child:
@@ -646,7 +646,7 @@ def prove_parents(c):
         if p in checked:
             continue
         assert p.spouse not in checked
-        parents = filter(None, [p, p.spouse])
+        parents = [_f for _f in [p, p.spouse] if _f]
         for p in parents:
             checked.add(p)
         prove_parents_children(c, parents)
@@ -677,8 +677,8 @@ def prove_parents_children(comp, parents):
 
     errors = False
     if len(children) > n_max_children:
-        print 'warning: %d children were found when max was expected to be %d' % (
-            len(children), n_max_children)
+        print('warning: %d children were found when max was expected to be %d' % (
+            len(children), n_max_children))
 #         for p in parents:
 #             print p.a.name
 #         print '-'*60
@@ -698,17 +698,17 @@ def prove_parents_children(comp, parents):
     for c in children:
         if c.mother is not None:
             if c.mother != mother:
-                print 'warning: inconsistent mother for child'
+                print('warning: inconsistent mother for child')
                 errors = True
         if mother is not None and not c.has_edge_to(mother):
-            print 'no relationship between mother and child'
+            print('no relationship between mother and child')
             errors = True
         if c.father is not None:
             if c.father != father:
-                print 'warning: inconsistent father for child'
+                print('warning: inconsistent father for child')
                 errors = True
         if father is not None and not c.has_edge_to(father):
-            print 'no relationship between father and child'
+            print('no relationship between father and child')
             errors = True
 
     if errors:
@@ -760,7 +760,7 @@ def child_parent_direction(parent, child):
         child.parsed_name.title in ('mrs','mr')):
         return False
 
-    print 'difficult child parent direction'
+    print('difficult child parent direction')
     return parent.a.parch > child.a.parch
 
 def has_other_possible_parents(child, parents):
@@ -837,7 +837,7 @@ def ambiguous_le_diff(a, b, d):
     return a<0 or b<0 or a-b <= d
 
 def largest_common_substring(a, b):
-    for i in xrange(min(len(a), len(b))):
+    for i in range(min(len(a), len(b))):
         if a[:i:] != b[:i:]:
             break
     return i
@@ -857,9 +857,9 @@ def maiden_name(p):
 
 @contextmanager
 def block(fp, name, *args):
-    print >>fp, name, ' '.join(args), '{'
+    print(name, ' '.join(args), '{', file=fp)
     yield
-    print >>fp, '}'
+    print('}', file=fp)
 
 
 class DotCreator(object):
@@ -904,25 +904,25 @@ class DotCreator(object):
             self.write_common_edge(e)
 
     def write_family(self, f):
-        print >>self.fp, '%s [label="%s" shape="circle"]' % (f.dot_id, f.name)
+        print('%s [label="%s" shape="circle"]' % (f.dot_id, f.name), file=self.fp)
         for p,label in [(f.mother, 'mother'), (f.father, 'father')]:
             if p:
                 self.write_common_node(p)
-                print >>self.fp, '%s -> %s [label="%s"]' % (p.dot_id, f.dot_id, label)
-        print >>self.fp, '{rank=same;',
+                print('%s -> %s [label="%s"]' % (p.dot_id, f.dot_id, label), file=self.fp)
+        print('{rank=same;', end=' ', file=self.fp)
         for p in f.mother, f.father:
             if p:
-                print >>self.fp, p.dot_id,
-        print >>self.fp, '}'
+                print(p.dot_id, end=' ', file=self.fp)
+        print('}', file=self.fp)
 
         for c in f.children:
             self.write_common_node(c)
-            print >>self.fp, '%s -> %s [label="child"]' % (f.dot_id, c.dot_id)
+            print('%s -> %s [label="child"]' % (f.dot_id, c.dot_id), file=self.fp)
 
-        print >>self.fp, '{rank=same;',
+        print('{rank=same;', end=' ', file=self.fp)
         for c in f.children:
-            print >>self.fp, c.dot_id,
-        print >>self.fp, '}'
+            print(c.dot_id, end=' ', file=self.fp)
+        print('}', file=self.fp)
 
     def write_common_node(self, n):
         if n in self.written_nodes:
@@ -957,16 +957,16 @@ class DotCreator(object):
 
     def write_node(self, n, **kwds):
         assert n not in self.written_nodes
-        print >>self.fp, '%s [%s]' % (n.dot_id, self.make_attributes(kwds))
+        print('%s [%s]' % (n.dot_id, self.make_attributes(kwds)), file=self.fp)
         self.written_nodes.add(n)
 
     def write_edge(self, e, **kwds):
-        print >>self.fp, '%s -> %s [%s]' % (e.a.dot_id, e.b.dot_id, self.make_attributes(kwds))
+        print('%s -> %s [%s]' % (e.a.dot_id, e.b.dot_id, self.make_attributes(kwds)), file=self.fp)
 
     @classmethod
     def make_attributes(cls, kwds):
         return ' '.join('%s=%s' % (k, cls.quote_value(k,v))
-                        for k,v in kwds.iteritems())
+                        for k,v in kwds.items())
 
     @staticmethod
     def quote_value(k, v):

@@ -1,7 +1,7 @@
 '''Provides a convenient interface to the training and testing data
 '''
 
-from __future__ import division
+
 
 import os.path
 import csv
@@ -133,7 +133,7 @@ class TitanicDataSet(object):
         return self.entry_class(*(c[i] for c in self.columns))
 
     def iter_entries(self):
-        for i in xrange(len(self)):
+        for i in range(len(self)):
             yield self.get_entry(i)
 
     def copy(self):
@@ -165,7 +165,7 @@ class TitanicDataSet(object):
             reader = csv.reader(fp)
             rows = list(reader)
         keys = tuple(rows.pop(0))
-        columns = zip(*rows)
+        columns = list(zip(*rows))
         columns = [cls.process_column(key, column) for key,column in zip(keys, columns)]
         return cls(keys, columns, is_train)
 

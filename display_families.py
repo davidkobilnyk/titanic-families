@@ -48,7 +48,7 @@ def plot_troubled_families():
                                    if f.difficult_parent_child])
 
 def display_graph(i, components):
-    print 'displaying', i
+    print('displaying', i)
     if not os.path.exists(OUTPUT_DIR):
         os.mkdir(OUTPUT_DIR)
     output_path = os.path.join(OUTPUT_DIR, '%d.png' % (i,))

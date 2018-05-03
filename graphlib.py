@@ -2,6 +2,7 @@
 '''
 
 import operator
+from functools import reduce
 
 class Node(object):
 
@@ -72,7 +73,7 @@ class Graph(BaseComponent):
         for component in self.components:
             component.graph = None
         self.components = None
-        nodes, edges = map(join, zip(*nodes_edges))
+        nodes, edges = list(map(join, list(zip(*nodes_edges))))
         return nodes, edges
 
 
@@ -102,7 +103,7 @@ class GraphBuilder(object):
 
     def get_singleton_components(self):
         acc = []
-        for node in self.values_to_nodes.itervalues():
+        for node in self.values_to_nodes.values():
             if not node.edges:
                 assert not node in self.nodes_to_components
                 acc.append(self.component_factory([node], []))
@@ -148,7 +149,8 @@ class GraphBuilder(object):
         self.components.append(component)
         return component,e
 
-    def make_edge(self, component, node_in, node_out, (i,j)):
+    def make_edge(self, component, node_in, node_out, index_tuple):
+        (i,j) = index_tuple
         edge = self.edge_factory(i, j)
         component.nodes.append(node_out)
         component.edges.append(edge)
