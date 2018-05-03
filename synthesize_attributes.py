@@ -4,13 +4,14 @@
 import os
 import os.path
 from subprocess import check_call
-import cPickle as pickle
+import pickle as pickle
 
 import numpy as np
 
-import data; reload(data)
+import data; imp.reload(data)
 from data import TitanicDataSet
 from findfamilies import construct_family_components, child_parent_direction
+import imp
 
 
 def main():
@@ -33,11 +34,11 @@ def synthesize(name, people, original_ds):
     assert all(p.a.name == name for p,name in zip(people, original_ds.name))
 
     base_keys = people[0].a._fields
-    synthesized_keys, calculates = zip(*synthesized_attributes)
+    synthesized_keys, calculates = list(zip(*synthesized_attributes))
     keys = base_keys + synthesized_keys
-    rows = [map(coere_attribute, p.a) +
+    rows = [list(map(coere_attribute, p.a)) +
             [c(p) for c in calculates] for p in people]
-    cols = map(np.array, zip(*rows))
+    cols = list(map(np.array, list(zip(*rows))))
     global ds
     ds = TitanicDataSet(keys, cols, people[0].survived is not None)
     with open('data/synthesized/%s.p' % (name,), 'w') as fp:

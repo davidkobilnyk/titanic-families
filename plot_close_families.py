@@ -103,7 +103,7 @@ class BaseFrame(object):
         assert len(self.lines)
         assert len(self.points)
         self.lines = np.array(self.lines)
-        self.markers, self.colors, points = zip(*self.points)
+        self.markers, self.colors, points = list(zip(*self.points))
         self.points = np.array(points)
 
     def scale(self, factor):
@@ -207,7 +207,7 @@ class FamilyFrame(BaseFrame):
         self.create_children()
 
     def create_parents(self):
-        parents = filter(None, [self.mother, self.father])
+        parents = [_f for _f in [self.mother, self.father] if _f]
         assert parents
         if len(parents) == 1:
             self.create_person(0, 0, parents[0])
@@ -291,7 +291,7 @@ class FramePlacer(object):
         for f in self.frames:
             for m,c,p in zip(f.markers, f.colors, f.points):
                 acc[m,c].append(p)
-        return [(m,c,np.array(ps)) for (m,c),ps in acc.iteritems()]
+        return [(m,c,np.array(ps)) for (m,c),ps in acc.items()]
 
     def collect_lines(self):
         acc = []
