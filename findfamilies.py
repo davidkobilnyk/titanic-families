@@ -194,7 +194,7 @@ class Person(graphlib.Node, DotIDMixin):
         return len(self.extendeds)
 
     def __str__(self):
-        return 'p(%s)' % (self.name,)
+        return 'p(%s %s)' % (self.parsed_name.main, self.parsed_name.last)
 
     @property
     def adjusted_sibsp(self):
@@ -340,6 +340,7 @@ def construct_family_components(train=TitanicDataSet.get_train(),
             for f in build_relations(c)]
 
 def add_last_names(nb, ds):
+    print(ds)
     if ds is None:
         return
     if ds.is_train:

@@ -15,6 +15,7 @@ train_path = os.path.join(csv_dir, 'train.csv')
 test_path = os.path.join(csv_dir, 'test.csv')
 
 attribute_types = dict(
+  passenger_id='int',
   survived='bool',
   pclass=('nominal', ('1','2','3')),
   name='string',
@@ -165,6 +166,7 @@ class TitanicDataSet(object):
             reader = csv.reader(fp)
             rows = list(reader)
         keys = tuple(rows.pop(0))
+        print(keys)
         columns = list(zip(*rows))
         columns = [cls.process_column(key, column) for key,column in zip(keys, columns)]
         return cls(keys, columns, is_train)
