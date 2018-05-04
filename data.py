@@ -166,7 +166,6 @@ class TitanicDataSet(object):
             reader = csv.reader(fp)
             rows = list(reader)
         keys = tuple(rows.pop(0))
-        print(keys)
         columns = list(zip(*rows))
         columns = [cls.process_column(key, column) for key,column in zip(keys, columns)]
         return cls(keys, columns, is_train)

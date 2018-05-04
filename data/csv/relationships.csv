@@ -1,4 +1,4 @@
-,PID1,PID2,RelationshipType,Survived1,Survived2
+,PassengerId1,PassengerId2,RelationshipType,Survived1,Survived2
 0,1,478,Brother,False,False
 1,2,551,Extended,True,True
 2,2,582,Extended,True,True

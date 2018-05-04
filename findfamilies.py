@@ -340,7 +340,6 @@ def construct_family_components(train=TitanicDataSet.get_train(),
             for f in build_relations(c)]
 
 def add_last_names(nb, ds):
-    print(ds)
     if ds is None:
         return
     if ds.is_train:
