@@ -35,6 +35,7 @@ def create_relationship_dfs():
     for f in families:
         fam_list = [n.a.passenger_id for n in f.nodes]
         fam_dict = dict(zip(range(1, 18), fam_list))
+        fam_dict['FamilySize'] = len(f.nodes)
         fam_series = pd.Series(fam_dict)
         df_fam = df_with_new_row(df_fam, fam_series)
         for n in f.nodes:
